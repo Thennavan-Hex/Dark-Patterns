@@ -1,0 +1,21 @@
+{
+    "manifest_version": 3,
+    "name": "URL Tracker",
+    "version": "1.0",
+    "description": "Capture and send URLs to local server",
+    "permissions": [
+      "tabs",
+      "http://localhost:3000/*",
+      "storage"
+    ],
+    "background": {
+      "service_worker": "background.js"
+    },
+    "content_scripts": [
+      {
+        "matches": ["<all_urls>"],
+        "js": ["content.js"]
+      }
+    ]
+  }
+  
