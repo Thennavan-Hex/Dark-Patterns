@@ -3,8 +3,7 @@
   "name": "URL Tracker",
   "version": "1.0",
   "description": "Capture and send URLs to local server",
-  "permissions": [
-    "tabs",
+  "host_permissions": [
     "http://localhost:3000/*"
   ],
   "background": {
