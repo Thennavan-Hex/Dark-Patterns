@@ -38,18 +38,45 @@ app.post('/api/get-url-score', async (req, res) => {
   }
 });
 
-async function getUrlScore(url) {
+app.post('/api/report', async (req, res) => {
+  const { url, userIp, report } = req.body;
+
+  console.log('Received report for URL:', url, 'User IP:', userIp, 'Report:', report);
+
+  try {
+    // Get the URL ID from the 'url_data' table
+    const urlId = await getUrlId(url);
+
+    // Insert the user report into the 'user_reports' table
+    await insertUserReport(urlId, userIp, report);
+
+    res.json({ status: 'success', message: 'Report received successfully' });
+  } catch (error) {
+    console.error('Error receiving report:', error);
+    res.status(500).json({ status: 'error', message: 'Internal server error' });
+  }
+});
+
+async function getUrlId(url) {
   try {
     // Validate and correct the URL before creating a URL object
     const correctedUrl = validateAndCorrectUrl(url);
 
     if (!correctedUrl) {
       console.error('Invalid URL:', url);
-      return 0; // Respond with 0% availability for invalid URLs
+      throw new Error('Invalid URL');
     }
 
-    const result = await client.query('SELECT total_score FROM url_data WHERE url = $1', [correctedUrl]);
-    return result.rows.length > 0 ? result.rows[0].total_score : 0;
+    const result = await client.query('SELECT id FROM url_data WHERE url = $1', [correctedUrl]);
+    return result.rows.length > 0 ? result.rows[0].id : null;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function insertUserReport(urlId, userIp, report) {
+  try {
+    await client.query('INSERT INTO user_reports (url_id, user_ip, report, timestamp) VALUES ($1, $2, $3, NOW())', [urlId, userIp, report]);
   } catch (error) {
     throw error;
   }
@@ -66,6 +93,8 @@ function validateAndCorrectUrl(inputUrl) {
     return null;
   }
 }
+
+// ... (remaining code)
 
 const PORT = 3000;
 app.listen(PORT, () => {

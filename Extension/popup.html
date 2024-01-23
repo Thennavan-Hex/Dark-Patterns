@@ -8,8 +8,12 @@
 </head>
 <body>
   <div id="totalScoreContainer" class="popup">
-    <div id="totalScore" class="red">0%</div>
-    <div class="settingsIcon">&#9881;</div>
+    <div id="totalScore" class="score red">0%</div>
+    <button id="reportButton">Report</button>
+    <div id="commandBox" class="hidden">
+      <textarea id="commandInput" placeholder="Type your command..."></textarea>
+      <button id="submitCommand">Submit</button>
+    </div>
   </div>
   <script src="popup.js"></script>
 </body>
