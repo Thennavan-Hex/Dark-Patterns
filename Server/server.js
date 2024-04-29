@@ -82,6 +82,16 @@ async function insertUserReport(urlId, userIp, report) {
   }
 }
 
+async function getUrlScore(url) {
+  try {
+    // Fetch the score from the database based on the URL
+    const result = await client.query('SELECT score FROM url_scores WHERE url = $1', [url]);
+    return result.rows.length > 0 ? result.rows[0].score : null;
+  } catch (error) {
+    throw error;
+  }
+}
+
 // Function to validate and correct URL
 function validateAndCorrectUrl(inputUrl) {
   try {
@@ -93,8 +103,6 @@ function validateAndCorrectUrl(inputUrl) {
     return null;
   }
 }
-
-// ... (remaining code)
 
 const PORT = 3000;
 app.listen(PORT, () => {
